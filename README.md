@@ -19,7 +19,6 @@
 
 # PRESENTATION
 
-
     Welcome to PyRat software!
     
     PyRat is an educative software in which users are asked to write AIs to control tokens in a maze, in order to collect pieces of cheese.
