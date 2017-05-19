@@ -39,6 +39,17 @@ import TypeConverter
 class PyRatProgram (NetworkClient.NetworkClient) :
     
     ############################################################################################################################################################################################################################
+    ######################################################################################################### CONSTANTS ########################################################################################################
+    ############################################################################################################################################################################################################################
+        
+        ### DOCUMENTATION ###
+        # Set this to False to work with the normal PyRat representation
+        # Set this to True to work with numpy representation
+
+        ### CODE ###
+        NUMPY_STRUCTURES = True
+        
+    ############################################################################################################################################################################################################################
     ####################################################################################################### CONSTRUCTORS #######################################################################################################
     ############################################################################################################################################################################################################################
         
@@ -94,6 +105,14 @@ class PyRatProgram (NetworkClient.NetworkClient) :
             piecesOfCheese = configuration["piecesOfCheese"]
             timeAllowed = configuration["timeAllowed"]
             
+            # Possible conversion to numpy structures
+            if self.NUMPY_STRUCTURES :
+                mazeMap = converter.toNumpyMatrix(configuration["mazeMap"], mazeWidth)
+                playerLocation = converter.toIndex(configuration["playerLocation"], mazeWidth)
+                if opponentLocation :
+                    opponentLocation = converter.toIndex(configuration["opponentLocation"], mazeWidth)
+                piecesOfCheese = converter.toNumpyArray(configuration["piecesOfCheese"], mazeWidth)
+            
             # Preprocessing step
             start = time.time()
             preprocessingMethod(mazeMap, mazeWidth, mazeHeight, playerLocation, opponentLocation, piecesOfCheese, timeAllowed)
@@ -102,6 +121,8 @@ class PyRatProgram (NetworkClient.NetworkClient) :
             
             # Main loop
             while True :
+                
+                # We get the turn information
                 configurationString = super().receiveMessage()
                 compulsoryKeys = ["playerLocation", "playerScore", "piecesOfCheese"]
                 optionalKeys = ["opponentLocation", "opponentScore", "timeAllowed"]
@@ -112,8 +133,19 @@ class PyRatProgram (NetworkClient.NetworkClient) :
                 opponentLocation = configuration["opponentLocation"]
                 opponentScore = configuration["opponentScore"]
                 timeAllowed = configuration["timeAllowed"]
+                
+                # Possible conversion to numpy structures
+                if self.NUMPY_STRUCTURES :
+                    playerLocation = converter.toIndex(configuration["playerLocation"], mazeWidth)
+                    if opponentLocation :
+                        opponentLocation = converter.toIndex(configuration["opponentLocation"], mazeWidth)
+                    piecesOfCheese = converter.toNumpyArray(configuration["piecesOfCheese"], mazeWidth)
+                
+                # We stop if no more cheese is available
                 if not piecesOfCheese :
                     break
+                
+                # Turn step
                 start = time.time()
                 move = turnMethod(mazeMap, mazeWidth, mazeHeight, playerLocation, opponentLocation, playerScore, opponentScore, piecesOfCheese, timeAllowed)
                 if not move :

@@ -27,6 +27,7 @@
 
 ### EXTERNAL ###
 import ast
+import numpy
 import os
 import socket
 
@@ -147,6 +148,54 @@ class TypeConverter :
             
             # Done
             return ip
+        
+    ############################################################################################################################################################################################################################
+        
+        ### DOCUMENTATION ###
+        # Converts the given location to an index
+        
+        ### CODE ###
+        def toIndex (self, location, width) :
+            
+            # Done
+            return location[0] * width + location[1]
+        
+    ############################################################################################################################################################################################################################
+        
+        ### DOCUMENTATION ###
+        # Converts the given list of locations to a numpy array
+        
+        ### CODE ###
+        def toNumpyArray (self, listOfLocations, width) :
+            
+            # Conversion
+            listOfIndices = []
+            for location in listOfLocations :
+                locationIndex = self.toIndex(location, width)
+                listOfIndices.append(locationIndex)
+            
+            # Done
+            return numpy.array(listOfIndices)
+        
+    ############################################################################################################################################################################################################################
+        
+        ### DOCUMENTATION ###
+        # Converts the given maze map to a numpy adjacency matrix
+        
+        ### CODE ###
+        def toNumpyMatrix (self, mazeMap, width) :
+            
+            # Conversion
+            adjacencyMatrix = numpy.zeros((len(mazeMap.keys()), len(mazeMap.keys())))
+            for node in mazeMap :
+                nodeIndex = self.toIndex(node, width)
+                for neighbor in mazeMap[node] :
+                    neighborIndex = self.toIndex(neighbor, width)
+                    adjacencyMatrix[nodeIndex][neighborIndex] = mazeMap[node][neighbor]
+                    adjacencyMatrix[neighborIndex][nodeIndex] = mazeMap[neighbor][node]
+            
+            # Done
+            return adjacencyMatrix
         
     ############################################################################################################################################################################################################################
         
