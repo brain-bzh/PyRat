@@ -142,7 +142,7 @@ class PyRatProgram (NetworkClient.NetworkClient) :
                     piecesOfCheese = converter.toNumpyArray(configuration["piecesOfCheese"], mazeWidth)
                 
                 # We stop if no more cheese is available
-                if not piecesOfCheese :
+                if len(piecesOfCheese) == 0 :
                     break
                 
                 # Turn step
@@ -154,7 +154,7 @@ class PyRatProgram (NetworkClient.NetworkClient) :
                 super().sendMessage(str(move) + str(elapsed))
             
             # Game is over
-            if not opponentLocation :
+            if opponentLocation is None :
                 print("<b><font color=\"green\">[INFO]</font></b> Congratulations! You got all the cheese!")
             else :
                 if playerScore > opponentScore :
